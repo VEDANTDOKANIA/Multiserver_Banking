@@ -46,11 +46,9 @@ public class Main {
             }
         }
     }
-
     // ClientHandler class
     private static class ClientHandler implements Runnable  {
         private final Socket clientSocket;
-
         // Constructor
         public ClientHandler(Socket socket)
         {
@@ -79,7 +77,7 @@ public class Main {
             while (true) {
                 try{
                 while (true) {
-                    String choice = br.readLine();
+                    var choice = br.readLine();
                     if (choice == null) {
                         break;
                     }
@@ -103,23 +101,22 @@ public class Main {
                             }
                         }
 
-                        String password = br.readLine();
+                        var password = br.readLine();
 
-                        String accountnumber = br.readLine();
+                        var mobilenumber = br.readLine();
 
-                        String accountype = br.readLine();
+                        var accountype = br.readLine();
 
-                        ArrayList<String> l1 = new ArrayList<>();
-                        l1.add(0, dtf.format(now) + " " + 0 + "+");
+                        ArrayList<String> transactionlist = new ArrayList<>();
+                        transactionlist.add(0, dtf.format(now) + " " + 0 + "+");
 
                         if (accountype.equals("1")) {
-                            write_accountmap(username, password, accountnumber, "Saving");
-                            write_transaction(username, l1);
+                            write_accountmap(username, password, mobilenumber, "Saving");
+                            write_transaction(username, transactionlist);
                         } else if (accountype.equals("2")) {
-                            write_accountmap(username, password, accountnumber, "Current");
-                            write_transaction(username, l1);
+                            write_accountmap(username, password, mobilenumber, "Current");
+                            write_transaction(username, transactionlist);
                         }
-
 
                         bw.write(String.valueOf("Login Successful"));
                         bw.newLine();
@@ -157,14 +154,14 @@ public class Main {
                     if (choice.equals("forget")) {
                         HashMap<String, ArrayList<String>> accountmap = new HashMap<>();
                         accountmap = read_accountmap();
-                        ArrayList<String> l1 = new ArrayList<>();
-                        l1 = accountmap.get(br.readLine());
-                        String number = (String) l1.get(1);
+                        ArrayList<String> accountdetails = new ArrayList<>();
+                        accountdetails = accountmap.get(br.readLine());
+                        String number = (String) accountdetails.get(1);
                         int otp = (int) (Math.random() * (201) + 200);
                         sendsms(("Your otp is:" + String.valueOf(otp)+" \n" + "Please don't share OTP with anyone"), number);
 
                         if (Integer.parseInt(br.readLine()) == otp) {
-                            bw.write("Your password is : " + l1.get(0));
+                            bw.write("Your password is : " + accountdetails.get(0));
                             bw.newLine();
                             bw.flush();
                         }
@@ -173,8 +170,8 @@ public class Main {
                     }
 
                     if (choice.equals("deposit")) {
-                        String username = br.readLine();
-                        String amount = br.readLine();
+                        var username = br.readLine();
+                        var amount = br.readLine();
 
                         ArrayList<String> l1 = new ArrayList<>();
                         ArrayList<String> l2 = new ArrayList<>();
@@ -194,7 +191,7 @@ public class Main {
                         }
 
                         write_transaction(username, l1);
-                        bw.write("Amount Added Successfully.   " + "  Your new balance is:" + getBalance(username));
+                        bw.write("Amount Added Successfully." + "Your new balance is:" + getBalance(username));
                         bw.newLine();
                         bw.flush();
                         break;
@@ -202,8 +199,8 @@ public class Main {
 
                     if (choice.equals("withdraw")) {
                         HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
-                        String username = br.readLine();
-                        String amount = br.readLine();
+                        var username = br.readLine();
+                        var amount = br.readLine();
 
                         int balance = getBalance(username);
                         if (Integer.parseInt(amount) > balance) {
@@ -212,12 +209,12 @@ public class Main {
                             bw.flush();
                         } else {
                             transactionmap = read_transaction();
-                            ArrayList<String> l1 = new ArrayList<>();
-                            l1 = transactionmap.get(username);
-                            l1.add(dtf.format(now) + " " + amount + "-");
+                            ArrayList<String> transactiondetails = new ArrayList<>();
+                            transactiondetails = transactionmap.get(username);
+                            transactiondetails.add(dtf.format(now) + " " + amount + "-");
 
-                            transactionmap.put(username, l1);
-                            write_transaction(username, l1);
+                            transactionmap.put(username, transactiondetails);
+                            write_transaction(username, transactiondetails);
                             bw.write("Your new balance is: " + getBalance(username));
                             bw.newLine();
                             bw.flush();
@@ -229,11 +226,11 @@ public class Main {
 
                     if (choice.equals("balance")) {
                         HashMap<String, ArrayList<String>> accountmap = new HashMap<>();
-                        String username= br.readLine();
+                        var username= br.readLine();
                         accountmap = read_accountmap();
-                        ArrayList l1 = new ArrayList();
-                        l1 = accountmap.get(username);
-                        String number = (String) l1.get(1);
+                        ArrayList transactionlist = new ArrayList();
+                        transactionlist = accountmap.get(username);
+                        String number = (String) transactionlist.get(1);
                         sendsms(("Your account balance is: Rs." + getBalance(username)), number);
                         bw.write(String.valueOf(getBalance(username)));
                         bw.newLine();
@@ -243,22 +240,22 @@ public class Main {
                     }
 
                     if (choice.equals("generatestatement")) {
-                        String username= br.readLine();
+                        var username= br.readLine();
                         HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
 
-                        ArrayList<String> l1 = new ArrayList<>();
+                        ArrayList<String> transactionlist = new ArrayList<>();
                         transactionmap = read_transaction();
-                        l1 = transactionmap.get(username);
+                        transactionlist = transactionmap.get(username);
 
-                        String s1 = l1.get(0) + "@";
+                        String s1 = transactionlist.get(0) + "@";
 
-                        if (l1 == null) {
+                        if (transactionlist == null) {
                             bw.write("No transactions found");
                             bw.newLine();
                             bw.flush();
                         } else {
-                            for (int i = 0; i < l1.size(); i++) {
-                                s1 = s1 + l1.get(i) + "@";
+                            for (int i = 0; i < transactionlist.size(); i++) {
+                                s1 = s1 + transactionlist.get(i) + "@";
 
                             }
                             s1 = s1 + String.valueOf(getBalance(username));
@@ -273,8 +270,8 @@ public class Main {
                     }
 
                     if (choice.equals("search")) {
-                        String username= br.readLine();
-                        String options = br.readLine();
+                        var username= br.readLine();
+                        var options = br.readLine();
 
                         if (options.equals("particular")) {
                             String startdate = dtf.format(now.minusMonths(1));
@@ -291,7 +288,8 @@ public class Main {
                                 bw.newLine();
                                 bw.flush();
                             }
-                        } else if (options.equals("particularsix")) {
+                        }
+                        else if (options.equals("particularsix")) {
                             String startdate = dtf.format(now.minusMonths(6));
                             String enddate = dtf.format(now);
                             Date startDate = validateDate(startdate);
@@ -307,11 +305,8 @@ public class Main {
                                 bw.flush();
                             }
                         } else if(options.equals("custom")){
-                            String start = br.readLine();
-                            String end = br.readLine();
-                            System.out.println(start);
-                            System.out.println(end);
-
+                            var start = br.readLine();
+                            var end = br.readLine();
                             Date startdate = validateDate(start);
                             Date enddate = validateDate(end);
                             String search = searchtransaction(username, startdate, enddate);
@@ -331,9 +326,9 @@ public class Main {
                     }
 
                     if (choice.equals("transfer")) {
-                        String userusername= br.readLine();
-                        String username = br.readLine();
-                        String amount = br.readLine();
+                        var userusername= br.readLine();
+                        var username = br.readLine();
+                        var amount = br.readLine();
                         HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
                         if (verifyusername(username) == true) {
                             bw.write("Username not found. Invalid transaction. Directing you to the main menu");
@@ -345,18 +340,18 @@ public class Main {
                             bw.newLine();
                             bw.flush();
                         } else if (verifyusername(username) == false) {
-                            ArrayList<String> l1 = new ArrayList<>();
-                            ArrayList<String> l2 = new ArrayList<>();
+                            ArrayList<String> payeetransaction = new ArrayList<>();
+                            ArrayList<String> paidtransaction = new ArrayList<>();
                             transactionmap = read_transaction();
-                            l1 = transactionmap.get(userusername);
-                            l1.add(dtf.format(now) + " " + amount + "-");
-                            transactionmap.put(userusername, l1);
-                            l2 = transactionmap.get(username);
-                            l2.add(dtf.format(now) + " " + amount + "+");
-                            transactionmap.put(username, l2);
+                            payeetransaction = transactionmap.get(userusername);
+                            payeetransaction.add(dtf.format(now) + " " + amount + "-");
+                            transactionmap.put(userusername, payeetransaction);
+                            paidtransaction = transactionmap.get(username);
+                            paidtransaction.add(dtf.format(now) + " " + amount + "+");
+                            transactionmap.put(username, paidtransaction);
                             //System.out.println(l1);
-                            write_transaction(userusername, l1);
-                            write_transaction(username, l2);
+                            write_transaction(userusername, payeetransaction);
+                            write_transaction(username, paidtransaction);
 
                             bw.write("Amount transferred successfully");
                             bw.newLine();

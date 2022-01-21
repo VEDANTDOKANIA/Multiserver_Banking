@@ -11,14 +11,14 @@ import java.util.*;
 public class Common_code {
     public static void write_accountmap(String username, String password, String Account, String type) {
         try {
-            HashMap<String, ArrayList<String>> accountmapnew = new HashMap<>();
+           var accountmapnew = new HashMap<String, ArrayList<String>>();
             accountmapnew = read_accountmap();
             BufferedWriter bw = new BufferedWriter(new FileWriter("Accountdetails.txt"));
-            ArrayList<String> l1 = new ArrayList<>();
-            l1.add(password);
-            l1.add(Account);
-            l1.add(type);
-            accountmapnew.put(username, l1);
+            ArrayList<String> newtransaction = new ArrayList<>();
+            newtransaction.add(password);
+            newtransaction.add(Account);
+            newtransaction.add(type);
+            accountmapnew.put(username, newtransaction);
             Set<String> set = accountmapnew.keySet();
             int n = set.size();
             List<String> lnew = new ArrayList<String>(n);
@@ -28,14 +28,14 @@ public class Common_code {
 
             for (int j = 0; j < lnew.size(); j++) {
                 bw.write(lnew.get(j) + ":");
-                ArrayList<String> l2 = new ArrayList<>();
-                l2 = accountmapnew.get(lnew.get(j));
+                ArrayList<String> alltransaction = new ArrayList<>();
+                alltransaction = accountmapnew.get(lnew.get(j));
 
-                for (int k = 0; k < l2.size() - 1; k++) {
-                    bw.write(l2.get(k) + ":");
+                for (int k = 0; k < alltransaction.size() - 1; k++) {
+                    bw.write(alltransaction.get(k) + ":");
                 }
-                if (l2.size() > 0) {
-                    bw.write(l2.get(l2.size() - 1));
+                if (alltransaction.size() > 0) {
+                    bw.write(alltransaction.get(alltransaction.size() - 1));
                 }
                 bw.newLine();
             }
@@ -47,7 +47,7 @@ public class Common_code {
 
     static HashMap<String, ArrayList<String>> read_accountmap() {
 
-        HashMap<String, ArrayList<String>> hp = new HashMap<>();
+       var transactionmap = new HashMap<String, ArrayList<String>>();
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("Accountdetails.txt"));
@@ -61,10 +61,10 @@ public class Common_code {
                 for (int i = 1; i < listParts.size(); i++) {
                     templist.add(listParts.get(i));
                 }
-                hp.put(username, templist);
+                transactionmap.put(username, templist);
 
             }
-            return hp;
+            return transactionmap;
 
 
         } catch (FileNotFoundException e) {
@@ -73,69 +73,69 @@ public class Common_code {
             e.printStackTrace();
         }
 
-        return hp;
+        return transactionmap;
     }
+
     public static boolean verifyusername(String username) {
 
-        HashMap<String, ArrayList<String>> tempmap = new HashMap<>();
-        tempmap = read_accountmap();
+        HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
+        transactionmap = read_accountmap();
 
-        Set<String> usernamelist = tempmap.keySet();
-        int size = usernamelist.size();
-        List<String> aList = new ArrayList<String>(size);
-        for (String x : usernamelist)
-            aList.add(x);
+        Set<String> usernameset = transactionmap.keySet();
+        int size = usernameset.size();
+        List<String> usernameList = new ArrayList<String>(size);
+        for (String x : usernameset)
+            usernameList.add(x);
         for (int i = 0; i < size; i++) {
-            if (username.equals(aList.get(i))) {
-                System.out.println("Enter new username. This username is not avialble");
+            if (username.equals(usernameList.get(i))) {
+                System.out.println("Enter new username. This username is not available");
                 return false;
             }
         }
         return true;
     }
+
     public static boolean verifypassword(String username, String password) {
         HashMap<String, ArrayList<String>> tempmap = new HashMap<>();
         tempmap = read_accountmap();
-        ArrayList<String> l1 = new ArrayList<>();
-        l1 = tempmap.get(username);
-        if (l1.get(0).equals(password)) {
+        ArrayList<String> transactionlist = new ArrayList<>();
+        transactionlist = tempmap.get(username);
+        if (transactionlist.get(0).equals(password)) {
             return true;
         } else
             return false;
     }
 
-    public static void write_transaction(String username, ArrayList<String> l1) {
+    public static void write_transaction(String username, ArrayList<String> userlist) {
 
         HashMap<String, ArrayList<String>> tempmap = new HashMap<>();
 
         tempmap = read_transaction();
-        tempmap.put(username,l1);
-
-
+        tempmap.put(username,userlist);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/Transaction.txt"))) {
             Set<String> set = tempmap.keySet();
             int n = set.size();
-            List<String> lnew = new ArrayList<String>(n);
+            List<String> usernamelist = new ArrayList<String>(n);
 
             for (String x : set) {
-                lnew.add(x);
+                usernamelist.add(x);
             }
 
-            for (int j = 0; j < lnew.size(); j++) {
-                bw.write(lnew.get(j) + ":");
+            for (int j = 0; j < usernamelist.size(); j++) {
+                bw.write(usernamelist.get(j) + ":");
 
-                ArrayList<String> l2 = new ArrayList<>();
-                l2 = tempmap.get(lnew.get(j));
+                ArrayList<String> transactionlist = new ArrayList<>();
+                transactionlist = tempmap.get(usernamelist.get(j));
 
-                if (l2.size() == 1) {
-                    bw.write(l2.get(0));
+                if (transactionlist.size() == 1) {
+                    bw.write(transactionlist.get(0));
                     bw.newLine();
                 } else {
-                    for (int k = 0; k < l2.size() - 1; k++) {
-                        bw.write(l2.get(k) + ":");
+                    for (int k = 0; k < transactionlist.size() - 1; k++) {
+                        bw.write(transactionlist.get(k) + ":");
                     }
-                    if (l2.size() > 1) {
-                        bw.write(l2.get(l2.size() - 1));
+                    if (transactionlist.size() > 1) {
+                        bw.write(transactionlist.get(transactionlist.size() - 1));
                     }
                     bw.newLine();
                 }
@@ -176,18 +176,18 @@ public class Common_code {
 
     public static int getBalance(String username) {
         HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
-        ArrayList<String> l1 = new ArrayList<>();
+        ArrayList<String> transactionlist = new ArrayList<>();
         transactionmap=read_transaction();
-        l1=transactionmap.get(username);
-        if(l1==null)
+        transactionlist=transactionmap.get(username);
+        if(transactionlist==null)
         {
             return 0 ;
         }
-        int size = l1.size();
+        int size = transactionlist.size();
         int amount = 0;
         int tamount = 0;
         for (int i = 0; i < size; i++) {
-            String tempamount = l1.get(i);
+            String tempamount = transactionlist.get(i);
 
             for (int j = 20; j < tempamount.length() - 1; j++) {
                 tamount = 10 * tamount + Integer.parseInt(String.valueOf(tempamount.charAt(j)));
@@ -206,29 +206,29 @@ public class Common_code {
         return amount;
     }
 
-    public static Date validateDate(String sdate) {
-        Date date1;
+    public static Date validateDate(String date) {
+        Date NewDate;
         while (true) {
-            String date = sdate;
+            String datetocheck = date;
             try {
-                date1 = new SimpleDateFormat("yyyy/MM/dd").parse(date);
+                NewDate = new SimpleDateFormat("yyyy/MM/dd").parse(date);
                 break;
             } catch (ParseException e) {
                 System.out.println("Enter date in particular format : YYYY/MM/DD");
             }
         }
-        return date1;
+        return NewDate;
     }
 
     public static String searchtransaction(String username , Date startdate , Date Enddate) throws ParseException {
         HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
         transactionmap = read_transaction();
-        ArrayList<String> l1 = new ArrayList<>();
-        l1 = transactionmap.get(username);
+        ArrayList<String> transactionlist = new ArrayList<>();
+        transactionlist = transactionmap.get(username);
         String s1 = null;
-        for(int i =0 ;i<l1.size() ;i++)
+        for(int i =0 ;i<transactionlist.size() ;i++)
         {
-            String wholedate = l1.get(i);
+            String wholedate = transactionlist.get(i);
             String tempyear = wholedate.substring(0,4);
             String teampmonth = wholedate.substring(5,7);
             String tempdate = wholedate.substring(8,10);
@@ -238,7 +238,7 @@ public class Common_code {
 
             if((d1.before(Enddate) && d1.after(startdate)) || d1.equals(startdate) || d1.equals(Enddate))
             {
-                s1 = s1+ l1.get(i) + ":";
+                s1 = s1+ transactionlist.get(i) + ":";
             }
         }
         return s1;
