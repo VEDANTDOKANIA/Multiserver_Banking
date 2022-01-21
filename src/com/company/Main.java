@@ -173,24 +173,24 @@ public class Main {
                         var username = br.readLine();
                         var amount = br.readLine();
 
-                        ArrayList<String> l1 = new ArrayList<>();
-                        ArrayList<String> l2 = new ArrayList<>();
-                        HashMap<String, ArrayList<String>> hp = new HashMap<>();
-                        hp = read_transaction();
+                        ArrayList<String> usertransactions = new ArrayList<>();
+                        ArrayList<String> newtransactions = new ArrayList<>();
+                        HashMap<String, ArrayList<String>> transactionmap = new HashMap<>();
+                        transactionmap = read_transaction();
 
-                        l1 = hp.get(username);
-                        if (l1 == null || l1.isEmpty()) {
+                        usertransactions = transactionmap.get(username);
+                        if (usertransactions == null || usertransactions.isEmpty()) {
 
-                            l2.add(dtf.format(now) + " " + amount + "+");
-                            hp.put(username, l2);
-                            l1 = l2;
+                            newtransactions.add(dtf.format(now) + " " + amount + "+");
+                            transactionmap.put(username, newtransactions);
+                            usertransactions = newtransactions;
 
                         } else {
-                            l1.add(dtf.format(now) + " " + amount + "+");
-                            hp.put(username, l1);
+                            usertransactions.add(dtf.format(now) + " " + amount + "+");
+                            transactionmap.put(username, usertransactions);
                         }
 
-                        write_transaction(username, l1);
+                        write_transaction(username, usertransactions);
                         bw.write("Amount Added Successfully." + "Your new balance is:" + getBalance(username));
                         bw.newLine();
                         bw.flush();
